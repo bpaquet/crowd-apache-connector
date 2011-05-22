@@ -93,17 +93,17 @@ sub init_cache($) {
 
 # ---------------------------------------------------------------------------
 
-sub read_options($) {
-	my $r = shift;
-	my $rlog = $r->log;
+sub read_options($) { my $r = shift; my $rlog = $r->log;
 
 	# Get parameters from the apache conf file
 	my $app_name = $r->dir_config('CrowdAppName');
 	my $app_credential = $r->dir_config('CrowdAppPassword');
 	my $cache_enabled = $r->dir_config('CrowdCacheEnabled') || 'on';
 	my $cache_expiry = $r->dir_config('CrowdCacheExpiry') || '300';
+	my $cookie_enable = $r->dir_config('CrowdCookieSet') || 'false';
 	my $cookie_name = $r->dir_config('CrowdCookieName') || 'crowd.token_key';
 	my $cookie_secure = $r->dir_config('CrowdCookieSecure') || 'false';
+	my $cookie_domain = $r->dir_config('CrowdCookieDomain') || 'false';
 	$cache_expiry = $cache_expiry.' seconds';
 	my $soaphost = $r->dir_config('CrowdSOAPURL') || "http://localhost:8095/crowd/services/SecurityServer";
 	
@@ -116,7 +116,7 @@ sub read_options($) {
 		$SOAP::Constants::DO_NOT_USE_XML_PARSER = 1;
 	}
 	
-	return ($app_name, $app_credential, $cache_enabled, $cache_expiry, $soaphost, $cookie_name, $cookie_secure);
+	return ($app_name, $app_credential, $cache_enabled, $cache_expiry, $soaphost, $cookie_enable, $cookie_name, $cookie_secure, $cookie_domain);
 }	
 
 # ---------------------------------------------------------------------------
@@ -149,19 +149,30 @@ sub get_app_token($$$$$$) {
 	return $apptoken;
 }
 
-sub add_cookie($$$$) {
-  my ($r, $cookie_name, $cookie_secure, $principal_token) = @_;
+sub set_cookie($$$$$) {
+  my ($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token) = @_;
   my $rlog = $r->log;
   my $cookie;
-  
+
+  $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token", -httponly=>1);
   if ($cookie_secure eq 'true') {
-    $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token", -secure=>1);
+    $cookie->secure(1);
   }
-  else {
-    $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token");
+  if ($cookie_domain ne 'false') {
+    $cookie->domain($cookie_domain);
   }
-  $rlog->debug('Set-Cookie '.$cookie->name.' : '.$cookie->value);
-  $r->headers_out->add('Set-Cookie' => $cookie);
+  
+  my $add_cookie = 1;
+  my @table = $r->headers_out->get('Set-Cookie');
+  foreach my $val (@table) {
+    if ($val =~ /.*$cookie_name.*/) {
+      $add_cookie = 0;
+    }
+  }
+  if ($add_cookie == 1) {
+    $rlog->debug('Set-Cookie '.$cookie->name.' : '.$cookie->value);
+    $r->headers_out->add('Set-Cookie' => $cookie);
+  }
 }
 # ---------------------------------------------------------------------------
 
@@ -174,7 +185,7 @@ sub handler {
 		
 	my $cache;
 	
-	my ($app_name, $app_credential, $cache_enabled, $cache_expiry, $soaphost, $cookie_name, $cookie_secure) = read_options($r); 
+	my ($app_name, $app_credential, $cache_enabled, $cache_expiry, $soaphost, $cookie_enable, $cookie_name, $cookie_secure, $cookie_domain) = read_options($r); 
 	
 	my $apptoken;
 	
@@ -208,14 +219,14 @@ sub handler {
      			$apptoken = get_app_token($r, $app_name, $app_credential, $soaphost, $cache, $cache_expiry);
 		 	my $res = Atlassian::Crowd::validate_token($soaphost, $app_name, $apptoken, $c->value, %validation_factors);
 			if ($res eq 'true') {
-				$rlog->warn('Token valid, user authenticated');
+				$rlog->debug('Token valid, user authenticated');
 	        	if($cache_enabled eq 'on') {
 					$cache->set('token_'.$c->value, 'OK', $cache_expiry);
 	        	}		
 	        		return OK;	
         		}
          		else {
-           			$rlog->warn('Invalid token, try normal authentification');
+           			$rlog->debug('Invalid token, try normal authentification');
          		}
        		}
     	}
@@ -226,7 +237,7 @@ sub handler {
 	my $user = $r->user;
 	unless($user and $password) {
 		 $r->note_basic_auth_failure;
-		 $rlog->info("Both a username and password must be provided");
+		 $rlog->debug("Both a username and password must be provided");
 		 return HTTP_UNAUTHORIZED;
 	}
 	
@@ -258,10 +269,10 @@ sub handler {
 				my $sha1Password = sha1_base64($password);
 				if($sha1Password eq $principalEntry) {
 					$pCacheHit = 1;
-					$rlog->info('CrowdAuth: auth principal cache hit...'.$user.', '.$sha1Password);
+					$rlog->debug('CrowdAuth: auth principal cache hit...'.$user.', '.$sha1Password);
 					my $principal_token = $cache->get('token_for_user_'.$user);
-					if (defined $principal_token) {
-					  add_cookie($r, $cookie_name, $cookie_secure, $principal_token);
+					if (defined $principal_token && $cookie_enable eq 'true') {
+					  set_cookie($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token);
   	      }
 				}
 			}
@@ -272,7 +283,7 @@ sub handler {
 			my $principal_token = Atlassian::Crowd::authenticate_principal($soaphost, $app_name, $apptoken, $user, $password, %validation_factors);
 			if (!defined $principal_token) {
 				# failed to auth user.
-				$rlog->warn('CrowdAuth: Failed to authenticate '.$user.'.');
+				$rlog->debug('CrowdAuth: Failed to authenticate '.$user.'.');
 				$r->note_basic_auth_failure;
 				return HTTP_UNAUTHORIZED;
 			}
@@ -284,7 +295,9 @@ sub handler {
 				$cache->set('token_'.$principal_token, 'OK', $cache_expiry);
 			}
 			
-			add_cookie($r, $cookie_name, $cookie_secure, $principal_token);
+			if ($cookie_enable eq 'true') {
+			  set_cookie($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token);
+		  }
 		}
 	} else {
 		$r->log_error('CrowdAuth: Failed to authenticate application.');
@@ -293,8 +306,8 @@ sub handler {
 		return HTTP_UNAUTHORIZED;
 	}
 		
-	$rlog->info('CrowdAuth: Principal '.$user.' authenticated OK');
-	return OK
+	$rlog->debug('CrowdAuth: Principal '.$user.' authenticated OK');
+	return OK;
 }
 
 

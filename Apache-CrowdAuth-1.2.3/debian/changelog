@@ -1,3 +1,9 @@
+libapache-crowdauth-perl (1.2.3-3) unstable; urgency=low
+
+  * Add cookie domain
+
+ -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 20:06:49 +0200
+
 libapache-crowdauth-perl (1.2.3-2) unstable; urgency=low
 
   * Manage secure cookie
