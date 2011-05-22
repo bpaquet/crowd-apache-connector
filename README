@@ -1,0 +1,8 @@
+Some improvment on http://confluence.atlassian.com/display/CROWD020/Integrating+Crowd+with+Apache
+
+* Send Set-Cookie headers after authent
+* Check Cookie header for crowd.token_key
+
+News parameters
+* CrowdCookieName : default value : crowd.token_key
+* CrowdCookieSecure : default value : false

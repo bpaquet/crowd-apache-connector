@@ -1,3 +1,9 @@
+libapache-crowdauth-perl (1.2.3-2) unstable; urgency=low
+
+  * Manage secure cookie
+
+ -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 19:32:31 +0200
+
 libapache-crowdauth-perl (1.2.3-1) unstable; urgency=low
 
   * Initial Release.
