@@ -103,7 +103,7 @@ sub read_options($) {
 	my $cache_enabled = $r->dir_config('CrowdCacheEnabled') || 'on';
 	my $cache_expiry = $r->dir_config('CrowdCacheExpiry') || '300';
 	my $cookie_name = $r->dir_config('CrowdCookieName') || 'crowd.token_key';
-	my $cookie_secure = $r->dir_config('CrowdSecure') || 'false';
+	my $cookie_secure = $r->dir_config('CrowdCookieSecure') || 'false';
 	$cache_expiry = $cache_expiry.' seconds';
 	my $soaphost = $r->dir_config('CrowdSOAPURL') || "http://localhost:8095/crowd/services/SecurityServer";
 	
@@ -152,7 +152,14 @@ sub get_app_token($$$$$$) {
 sub add_cookie($$$$) {
   my ($r, $cookie_name, $cookie_secure, $principal_token) = @_;
   my $rlog = $r->log;
-  my $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token");
+  my $cookie;
+  
+  if ($cookie_secure eq 'true') {
+    $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token", -secure=>1);
+  }
+  else {
+    $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token");
+  }
   $rlog->debug('Set-Cookie '.$cookie->name.' : '.$cookie->value);
   $r->headers_out->add('Set-Cookie' => $cookie);
 }
@@ -251,7 +258,7 @@ sub handler {
 				my $sha1Password = sha1_base64($password);
 				if($sha1Password eq $principalEntry) {
 					$pCacheHit = 1;
-					$rlog->warn('CrowdAuth: auth principal cache hit...'.$user.', '.$sha1Password.', '.$principalEntry);
+					$rlog->info('CrowdAuth: auth principal cache hit...'.$user.', '.$sha1Password);
 					my $principal_token = $cache->get('token_for_user_'.$user);
 					if (defined $principal_token) {
 					  add_cookie($r, $cookie_name, $cookie_secure, $principal_token);
