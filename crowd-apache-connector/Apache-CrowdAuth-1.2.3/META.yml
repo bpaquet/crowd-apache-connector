@@ -1,0 +1,13 @@
+--- #YAML:1.0
+name:                Apache-CrowdAuth
+version:             1.2.3
+abstract:            Apache authentication handler that uses Atlassian Crowd.
+license:             ~
+author:              
+    - Atlassian Pty Ltd <andrewr@>
+generated_by:        ExtUtils::MakeMaker version 6.42
+distribution_type:   module
+requires:     
+meta-spec:
+    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
+    version: 1.3
