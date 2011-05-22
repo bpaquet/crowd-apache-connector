@@ -1,0 +1,5 @@
+libapache-crowdauth-perl (1.2.3-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 19:04:51 +0200

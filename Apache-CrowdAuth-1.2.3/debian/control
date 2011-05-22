@@ -1,0 +1,21 @@
+Source: libapache-crowdauth-perl
+Section: perl
+Priority: optional
+Build-Depends: debhelper (>= 7)
+Build-Depends-Indep: perl
+Maintainer: Bertrand Paquet <bpaquet@octo.com>
+Standards-Version: 3.8.3
+Homepage: http://search.cpan.org/dist/Apache-CrowdAuth/
+
+Package: libapache-crowdauth-perl
+Architecture: all
+Depends: ${perl:Depends}, ${misc:Depends}, libapache2-mod-perl2, libcache-cache-perl, libsoap-lite-perl
+Description: Apache authentication handler that uses Atlassian Crowd.
+ This Module allows you to configure Apache to use Atlassian Crowd to handle
+ basic authentication.
+ .
+ See http://confluence.atlassian.com/x/rgGY
+ .
+ for full documentation.
+ .
+ This description was automagically extracted from the module by dh-make-perl.

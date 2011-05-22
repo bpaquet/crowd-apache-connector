@@ -1,0 +1,22 @@
+Source: libatlassian-crowd-perl
+Section: perl
+Priority: optional
+Build-Depends: debhelper (>= 7)
+Build-Depends-Indep: perl
+Maintainer: Bertrand Paquet <bpaquet@octo.com>
+Standards-Version: 3.8.3
+Homepage: http://search.cpan.org/dist/Atlassian-Crowd/
+
+Package: libatlassian-crowd-perl
+Architecture: all
+Depends: ${perl:Depends}, ${misc:Depends}, libapache2-mod-perl2, libcache-cache-perl, libsoap-lite-perl
+Description: Perl bindings for Atlassian Crowd SOAP API
+ Currently implemented:
+ .
+ authenticate_app($serverURL, $app_name, $app_credential)
+ authenticate_principal($serverURL, $app_name, $appToken, $principal_name,
+ $principal_credential) is_group_member($serverURL, $app_name, $appToken,
+ $group_name, $principal_name) find_group_memberships($serverURL, $app_name,
+ $appToken, $principal_name)
+ .
+ This description was automagically extracted from the module by dh-make-perl.
