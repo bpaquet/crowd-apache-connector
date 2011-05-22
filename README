@@ -1,7 +1,7 @@
-Some improvment on http://confluence.atlassian.com/display/CROWD020/Integrating+Crowd+with+Apache
+Some improvments on http://confluence.atlassian.com/display/CROWD020/Integrating+Crowd+with+Apache
 
-* Send Set-Cookie headers after authent
-* Check Cookie header for crowd.token_key
+* Send Set-Cookie crowd.token_key header after first authentication
+* Check if  Cookie crowd.token_key is present, and use it for authent. Call to check cookie to Crowd are cached.
 
 News parameters
 * CrowdCookieSet : add Set-Cookie header if needed, default value : false
