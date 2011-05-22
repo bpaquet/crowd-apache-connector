@@ -153,7 +153,10 @@ sub set_cookie($$$$$) {
   my ($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token) = @_;
   my $rlog = $r->log;
   my $cookie;
-
+  
+  # Add headers Cookie, used by upstream servers
+  $r->headers_in->add('Cookie' => $cookie_name.'='.$principal_token.';');
+  
   $cookie = new CGI::Cookie(-name=> $cookie_name, -value=>"$principal_token", -httponly=>1);
   if ($cookie_secure eq 'true') {
     $cookie->secure(1);
@@ -198,10 +201,14 @@ sub handler {
 	$validation_factors{'remote_address'} = $r->connection()->remote_addr->ip_get();
 	my $x_forwarded_for = $r->headers_in->get('X-Forwarded-For');
 	if (defined($x_forwarded_for)) {
-		$validation_factors{'X-Forwarded-For'} = $x_forwarded_for;
-   	} 
-    	$validation_factors{'User-Agent'} = $r->headers_in->get('User-Agent');
-    	#while (my ($name, $value) = each %validation_factors) { $rlog->warn('Validation factors : '.$name.' = '.$value); }
+		$validation_factors{'remote_address'} = $x_forwarded_for;
+  } 
+  $validation_factors{'User-Agent'} = $r->headers_in->get('User-Agent');
+  
+  my $string_validation_factors = '';
+  while (my ($name, $value) = each %validation_factors) {
+    $string_validation_factors .= $name.'-'.$value.'_';
+  }
   
 	my %cookies = parse CGI::Cookie($r->headers_in->get('Cookie'));
 	foreach (keys %cookies) {
@@ -210,7 +217,7 @@ sub handler {
        		if ($c->name eq $cookie_name) {
         		$rlog->debug('Try to validate token : '.$c->value);
         		if($cache_enabled eq 'on') {
-        			my $entry = $cache->get('token_'.$c->value);
+        			my $entry = $cache->get('token_'.$string_validation_factors.'_'.$c->value);
         			if (defined $entry) {
         				$rlog->debug('Token found in cache, user authenticated');
         				return OK;
@@ -270,10 +277,10 @@ sub handler {
 				if($sha1Password eq $principalEntry) {
 					$pCacheHit = 1;
 					$rlog->debug('CrowdAuth: auth principal cache hit...'.$user.', '.$sha1Password);
-					my $principal_token = $cache->get('token_for_user_'.$user);
-					if (defined $principal_token && $cookie_enable eq 'true') {
-					  set_cookie($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token);
-  	      }
+					my $principal_token = $cache->get('token_for_user_'.$string_validation_factors.'_'.$user);
+          if (defined $principal_token && $cookie_enable eq 'true') {
+            set_cookie($r, $cookie_name, $cookie_secure, $cookie_domain, $principal_token);
+          }
 				}
 			}
 		}
@@ -291,8 +298,8 @@ sub handler {
 			if($cache_enabled eq 'on') {
 				# cache the authentication
 				$cache->set($user, sha1_base64($password), $cache_expiry);
-				$cache->set('token_for_user_'.$user, $principal_token, $cache_expiry);
-				$cache->set('token_'.$principal_token, 'OK', $cache_expiry);
+				$cache->set('token_for_user_'.$string_validation_factors.'_'.$user, $principal_token, $cache_expiry);
+				$cache->set('token_'.$string_validation_factors.'_'.$principal_token, 'OK', $cache_expiry);
 			}
 			
 			if ($cookie_enable eq 'true') {
