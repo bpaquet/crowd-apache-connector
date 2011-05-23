@@ -1,3 +1,9 @@
+libatlassian-crowd-perl (1.2.3-2) unstable; urgency=low
+
+  * Get cookie domain information from Crowd server
+
+ -- root <root@master-infra.paris.octo>  Mon, 23 May 2011 21:51:04 +0200
+
 libatlassian-crowd-perl (1.2.3-1) unstable; urgency=low
 
   * Initial Release.
