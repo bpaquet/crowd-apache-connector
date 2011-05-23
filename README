@@ -6,5 +6,4 @@ Some improvments on http://confluence.atlassian.com/display/CROWD020/Integrating
 News parameters
 * CrowdCookieSet : add Set-Cookie header if needed, default value : false
 * CrowdCookieName : default value : crowd.token_key
-* CrowdCookieDomain : default value : none
-* CrowdCookieSecure : default value : false
+* CrowdCacheExpiryApp : cache expiry time for app cache, default value : 3600

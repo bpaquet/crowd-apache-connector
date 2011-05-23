@@ -128,10 +128,28 @@ sub read_options_cookies($) { my $r = shift;
 } 
 
 sub get_domain_config($$$$$$) {
-  my ($r, $app_name, $app_credential, $soaphost, $cache, $cache_expiry) = @_; 
+  my ($r, $app_name, $apptoken, $soaphost, $cache, $cache_expiry) = @_; 
+
+  my $domain;
+  my $secure;
   
-  return ('false', 'false');
+  if (defined $cache) {
+    $domain = $cache->get("___DOMAIN___");
+    $secure = $cache->get("___SECURE___");
+  }
+  
+  if (!(defined $domain) || !(defined $secure)) {
+    ($domain, $secure) = Atlassian::Crowd::get_cookie_info($soaphost, $app_name, $apptoken);
+    
+    if (defined $cache) {
+      $cache->set("___DOMAIN___", $domain, $cache_expiry);
+      $cache->set("___SECURE___", $secure, $cache_expiry);
+    }
+  }
+  
+  return ($domain, $secure);
 }
+
 # ---------------------------------------------------------------------------
 
 sub get_app_token($$$$$$) {
