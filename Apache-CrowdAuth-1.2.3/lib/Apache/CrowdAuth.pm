@@ -269,7 +269,7 @@ sub handler {
 		# is the principal in the cache?
 		my $principalEntry;
 		if($cache_enabled eq 'on') {
-			$principalEntry = $cache->get($user);
+			$principalEntry = $cache->get('user_'.$string_validation_factors.'_'.$user);
 			
 			if(defined $principalEntry) {
 				# check the passwords are the same
@@ -297,7 +297,7 @@ sub handler {
 			
 			if($cache_enabled eq 'on') {
 				# cache the authentication
-				$cache->set($user, sha1_base64($password), $cache_expiry);
+				$cache->set('user_'.$string_validation_factors.'_'.$user, sha1_base64($password), $cache_expiry);
 				$cache->set('token_for_user_'.$string_validation_factors.'_'.$user, $principal_token, $cache_expiry);
 				$cache->set('token_'.$string_validation_factors.'_'.$principal_token, 'OK', $cache_expiry);
 			}
