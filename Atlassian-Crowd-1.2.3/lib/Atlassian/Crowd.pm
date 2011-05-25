@@ -79,7 +79,7 @@ sub validate_token {
     while (my ($name, $value) = each %validation_factors) {
         push @validation_factor_params, \SOAP::Data->value(
             SOAP::Data->name('name' => $name),
-            SOAP::Data->name('value' => $value),
+            SOAP::Data->name('value' => $value)->type('string'),
         )
   }
     @validation_factor_params = undef unless @validation_factor_params; 
@@ -211,7 +211,7 @@ sub authenticate_principal {
     while (my ($name, $value) = each %validation_factors) {
         push @validation_factor_params, \SOAP::Data->value(
             SOAP::Data->name('name' => $name),
-            SOAP::Data->name('value' => $value),
+            SOAP::Data->name('value' => $value)->type('string'),
         )
   }
     @validation_factor_params = undef unless @validation_factor_params; 
