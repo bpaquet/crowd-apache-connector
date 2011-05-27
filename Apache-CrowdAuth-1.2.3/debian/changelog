@@ -1,3 +1,9 @@
+libapache-crowdauth-perl (1.2.3-5) unstable; urgency=low
+
+  * Get cookie domain information from Crowd server
+
+ -- Bertrand Paquet <bpaquet@octo.com>  Fri, 27 May 2011 16:13:00 +0200
+ 
 libapache-crowdauth-perl (1.2.3-4) unstable; urgency=low
 
   * Get cookie domain information from Crowd server

@@ -238,7 +238,17 @@ sub handler {
     # Initialise the cache
     $cache = init_cache($r);
   }
+  
+  my ($status, $password) = $r->get_basic_auth_pw;
+  return $status unless $status == OK;
 
+  my $user = $r->user;
+  unless($user and $password) {
+    $r->note_basic_auth_failure;
+    $rlog->debug("Both a username and password must be provided");
+    return HTTP_UNAUTHORIZED;
+  }
+  
   my %validation_factors;
   $validation_factors{'remote_address'} = $r->connection()->remote_addr->ip_get();
   my $x_forwarded_for = $r->headers_in->get('X-Forwarded-For');
@@ -278,16 +288,6 @@ sub handler {
         $rlog->debug('Invalid token, try normal authentification');
       }
     }
-  }
-
-  my ($status, $password) = $r->get_basic_auth_pw;
-  return $status unless $status == OK;
-
-  my $user = $r->user;
-  unless($user and $password) {
-    $r->note_basic_auth_failure;
-    $rlog->debug("Both a username and password must be provided");
-    return HTTP_UNAUTHORIZED;
   }
 
   # Both the application name and credential password need to be defined.
