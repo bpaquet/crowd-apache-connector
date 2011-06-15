@@ -1,3 +1,9 @@
+libapache-crowdauth-perl (1.2.3-6) unstable; urgency=low
+
+  * Correct bug in token cache.
+
+ -- root <root@master-infra.paris.octo>  Wed, 15 Jun 2011 21:17:17 +0200
+
 libapache-crowdauth-perl (1.2.3-5) unstable; urgency=low
 
   * Get cookie domain information from Crowd server
