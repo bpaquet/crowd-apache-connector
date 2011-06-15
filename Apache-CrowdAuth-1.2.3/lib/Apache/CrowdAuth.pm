@@ -271,21 +271,22 @@ sub handler {
       if($cache_enabled eq 'on') {
         my $entry = $cache->get('token_'.$string_validation_factors.'_'.$c->value);
         if (defined $entry) {
-          $rlog->debug('Token found in cache, user authenticated');
+          $rlog->debug("Token found in cache, user $user authenticated");
           return OK;
         }
       }
+      $rlog->debug('Try to validate token on server');
       $apptoken = get_app_token($r, $app_name, $app_credential, $soaphost, $cache, $cache_expiry_app);
       my $res = Atlassian::Crowd::validate_token($soaphost, $app_name, $apptoken, $c->value, %validation_factors);
       if ($res eq 'true') {
-        $rlog->debug('Token valid, user authenticated');
+        $rlog->debug('Token has been validated on server, user authenticated');
         if($cache_enabled eq 'on') {
-          $cache->set('token_'.$c->value, 'OK', $cache_expiry);
+          $cache->set('token_'.$string_validation_factors.'_'.$c->value, 'OK', $cache_expiry);
         }   
         return OK;  
       }
       else {
-        $rlog->debug('Invalid token, try normal authentification');
+        $rlog->debug("Invalid token for $user, try normal authentification");
       }
     }
   }
