@@ -100,7 +100,7 @@ sub read_options($) { my $r = shift; my $rlog = $r->log;
   my $app_credential = $r->dir_config('CrowdAppPassword');
   my $cache_enabled = $r->dir_config('CrowdCacheEnabled') || 'on';
   my $cache_expiry = $r->dir_config('CrowdCacheExpiry') || '30';
-  my $cache_expiry_app = $r->dir_config('CrowdCacheExpiryApp') || '3600';
+  my $cache_expiry_app = $r->dir_config('CrowdCacheExpiryApp') || '1200';
   my $cookie_name = $r->dir_config('CrowdCookieName') || 'crowd.token_key';
   my $soaphost = $r->dir_config('CrowdSOAPURL') || "http://localhost:8095/crowd/services/SecurityServer";
 
