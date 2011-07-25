@@ -1,3 +1,9 @@
+libapache-crowdauth-perl (1.2.3-7) unstable; urgency=low
+
+  * Change default expiry value for cache token app.
+
+ -- octo <octo@build-infra.paris.octo>  Mon, 25 Jul 2011 17:16:42 +0200
+
 libapache-crowdauth-perl (1.2.3-6) unstable; urgency=low
 
   * Correct bug in token cache.
