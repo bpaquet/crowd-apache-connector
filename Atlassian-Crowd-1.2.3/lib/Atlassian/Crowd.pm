@@ -78,7 +78,7 @@ sub validate_token {
   my @validation_factor_params;
   while (my ($name, $value) = each %validation_factors) {
     push @validation_factor_params, \SOAP::Data->value(
-      SOAP::Data->name('name' => $name),
+      SOAP::Data->name('name' => $name)->type('string'),
       SOAP::Data->name('value' => $value)->type('string'),
     )
   }
@@ -88,7 +88,7 @@ sub validate_token {
     SOAP::Data->name('in0' =>
       \SOAP::Data->value(
         SOAP::Data->name('name' => $app_name)->type('string')->attr({xmlns => $XMLNS}),
-        SOAP::Data->name('token' => $appToken)->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('token' => $appToken)->type('string')->attr({xmlns => $XMLNS}),
       )),
     SOAP::Data->name('in1' => $token
     )->attr({xmlns => $XMLNS}),
@@ -127,8 +127,8 @@ sub authenticate_app {
     SOAP::Data->name('in0' =>
       \SOAP::Data->value(
         SOAP::Data->name('credential' => \SOAP::Data->value(
-            SOAP::Data->name('credential' => $app_credential)))->attr({xmlns => $XMLNS}),
-        SOAP::Data->name('name' => $app_name)->attr({xmlns => $XMLNS}),
+            SOAP::Data->name('credential' => $app_credential)->type('string')))->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('name' => $app_name)->type('string')->attr({xmlns => $XMLNS}),
         SOAP::Data->name('validationFactors' => undef)->attr({xmlns => $XMLNS})
       )));
 
@@ -161,8 +161,8 @@ sub get_cookie_info {
   my @app_params = (
     SOAP::Data->name('in0' =>
       \SOAP::Data->value(
-        SOAP::Data->name('name' => $app_name)->attr({xmlns => $XMLNS}),
-        SOAP::Data->name('token' => $appToken)->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('name' => $app_name)->type('string')->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('token' => $appToken)->type('string')->attr({xmlns => $XMLNS}),
       ))
   );
 
@@ -210,7 +210,7 @@ sub authenticate_principal {
   my @validation_factor_params;
   while (my ($name, $value) = each %validation_factors) {
     push @validation_factor_params, \SOAP::Data->value(
-      SOAP::Data->name('name' => $name),
+      SOAP::Data->name('name' => $name)->type('string'),
       SOAP::Data->name('value' => $value)->type('string'),
     )
   }
@@ -219,16 +219,16 @@ sub authenticate_principal {
   my @principal_params = (
     SOAP::Data->name('in0' =>
       \SOAP::Data->value(
-        SOAP::Data->name('name' => $app_name)->attr({xmlns => $XMLNS}),
-        SOAP::Data->name('token' => $appToken)->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('name' => $app_name)->type('string')->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('token' => $appToken)->type('string')->attr({xmlns => $XMLNS}),
       )),
     SOAP::Data->name('in1' =>
       \SOAP::Data->value(
-        SOAP::Data->name('application' => $app_name)->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('application' => $app_name)->type('string')->attr({xmlns => $XMLNS}),
         SOAP::Data->name('credential' => \SOAP::Data->value(
-            SOAP::Data->name('credential' => $principal_credential),
+            SOAP::Data->name('credential' => $principal_credential)->type('string'),
           ))->attr({xmlns => $XMLNS}),
-        SOAP::Data->name('name' => $principal_name)->attr({xmlns => $XMLNS}),
+        SOAP::Data->name('name' => $principal_name)->type('string')->attr({xmlns => $XMLNS}),
         SOAP::Data->name('validationFactors' => \SOAP::Data->value( 
             SOAP::Data->name('ValidationFactor' => @validation_factor_params)
           ))->attr({xmlns => $XMLNS})
