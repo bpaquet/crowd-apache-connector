@@ -1,18 +1,7 @@
-libatlassian-crowd-perl (1.2.3-3) unstable; urgency=low
+libatlassian-crowd-perl (1.2.3-3) precise; urgency=low
 
   * Correct problem with Soap::Lite : detecting URI type instead of string for
     some browser user agent
 
- -- root <root@master-infra.paris.octo>  Wed, 25 May 2011 21:20:31 +0200
+ -- Bertrand Paquet <bertrand.paquet@gmail.com>  Wed, 25 May 2011 21:20:31 +0200
 
-libatlassian-crowd-perl (1.2.3-2) unstable; urgency=low
-
-  * Get cookie domain information from Crowd server
-
- -- root <root@master-infra.paris.octo>  Mon, 23 May 2011 21:51:04 +0200
-
-libatlassian-crowd-perl (1.2.3-1) unstable; urgency=low
-
-  * Initial Release.
-
- -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 19:02:33 +0200

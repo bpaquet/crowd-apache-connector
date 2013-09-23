@@ -1,41 +1,6 @@
-libapache-crowdauth-perl (1.2.3-7) unstable; urgency=low
+libapache-crowdauth-perl (1.2.3-7) precise; urgency=low
 
   * Change default expiry value for cache token app.
 
- -- octo <octo@build-infra.paris.octo>  Mon, 25 Jul 2011 17:16:42 +0200
+ -- Bertrand Paquet <bertrand.paquet@gmail.com>  Mon, 25 Jul 2011 17:16:42 +0200
 
-libapache-crowdauth-perl (1.2.3-6) unstable; urgency=low
-
-  * Correct bug in token cache.
-
- -- root <root@master-infra.paris.octo>  Wed, 15 Jun 2011 21:17:17 +0200
-
-libapache-crowdauth-perl (1.2.3-5) unstable; urgency=low
-
-  * Get cookie domain information from Crowd server
-
- -- Bertrand Paquet <bpaquet@octo.com>  Fri, 27 May 2011 16:13:00 +0200
- 
-libapache-crowdauth-perl (1.2.3-4) unstable; urgency=low
-
-  * Get cookie domain information from Crowd server
-
- -- root <root@master-infra.paris.octo>  Mon, 23 May 2011 21:51:22 +0200
-
-libapache-crowdauth-perl (1.2.3-3) unstable; urgency=low
-
-  * Add cookie domain
-
- -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 20:06:49 +0200
-
-libapache-crowdauth-perl (1.2.3-2) unstable; urgency=low
-
-  * Manage secure cookie
-
- -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 19:32:31 +0200
-
-libapache-crowdauth-perl (1.2.3-1) unstable; urgency=low
-
-  * Initial Release.
-
- -- root <root@master-infra.paris.octo>  Sun, 22 May 2011 19:04:51 +0200
