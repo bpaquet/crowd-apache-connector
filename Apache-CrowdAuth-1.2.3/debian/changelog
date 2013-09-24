@@ -1,3 +1,10 @@
+libapache-crowdauth-perl (1.2.3-9) precise; urgency=low
+
+  * Fix X-Forwarded-For management
+  * Use SHA instead of SHA-1
+
+ -- Bertrand Paquet <bertrand.paquet@gmail.com>  Tue, 24 Sep 2013 15:22:02 +0000
+
 libapache-crowdauth-perl (1.2.3-8) precise; urgency=low
 
   * Fix dependency problems
