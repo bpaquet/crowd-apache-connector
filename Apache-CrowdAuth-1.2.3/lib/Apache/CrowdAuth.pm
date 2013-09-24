@@ -9,7 +9,7 @@ use Cache::FileCache;
 use Atlassian::Crowd;
 use APR::SockAddr;
 use CGI::Cookie;
-use Digest::SHA1  qw(sha1 sha1_hex sha1_base64);
+use Digest::SHA  qw(sha1 sha1_hex sha1_base64);
 
 $SOAP::Constants::DO_NOT_USE_XML_PARSER = 1;
 
@@ -253,7 +253,7 @@ sub handler {
   $validation_factors{'remote_address'} = $r->connection()->remote_addr->ip_get();
   my $x_forwarded_for = $r->headers_in->get('X-Forwarded-For');
   if (defined($x_forwarded_for)) {
-    $validation_factors{'remote_address'} = $x_forwarded_for;
+    $validation_factors{'remote_address'} = $x_forwarded_for.', '.$validation_factors{'remote_address'};
   } 
   $validation_factors{'User-Agent'} = $r->headers_in->get('User-Agent');
 
