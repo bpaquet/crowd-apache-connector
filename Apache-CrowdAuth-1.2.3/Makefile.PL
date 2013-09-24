@@ -9,11 +9,9 @@ print "\nChecking for required modules:\n\n";
 
 my %requiredModules = (
     "SOAP::Lite"   => 0,
-    "Digest::SHA1" => 0,
     "Cache::Cache" => 0,
     "Error"        => 0,
     "CGI::Cookie" => 0,
-    "Atlassian::Crowd" => 0,
     "APR::SockAddr" => 0,
 );
 
