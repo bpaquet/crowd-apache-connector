@@ -1,3 +1,13 @@
+
+PPA
+===
+
+This package is available here
+https://launchpad.net/~bpaquet/+archive/crowd-apache2-modules
+
+Changelog
+===
+
 Some improvments on http://confluence.atlassian.com/display/CROWD020/Integrating+Crowd+with+Apache
 
 * Send Set-Cookie crowd.token_key header after first authentication
